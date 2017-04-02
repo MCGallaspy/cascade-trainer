@@ -13,7 +13,7 @@ def get_images(term, dest, num=40):
     total = 0
     nonalnum_expr = re.compile(r"[^\w\d]+")
     try:
-        os.makedirs(img_dir)
+        os.makedirs(dest)
     except os.error:
         pass
 
@@ -34,7 +34,7 @@ def get_images(term, dest, num=40):
             resp = requests.get(item['link'])
             if resp.status_code == requests.codes.ok:
                 cleaned_title = nonalnum_expr.sub("_", item['title']) + '.jpg'
-                filename = join(img_dir, cleaned_title)
+                filename = join(dest, cleaned_title)
                 with open(filename, 'wb') as f:
                     f.write(resp.content)
 
