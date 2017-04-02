@@ -1,3 +1,6 @@
 # My virtual environment
 trainer_env
+
+# Project dirs
 secrets
+images
