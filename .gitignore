@@ -3,4 +3,9 @@ trainer_env
 
 # Project dirs
 secrets
-images
+
+# Default image dirs
+neg_images
+unsorted_images
+
+*.pyc

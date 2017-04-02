@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 
 # Project imports
 import secrets
+import settings
 
 def get_images(term, dest, num=40):
     total = 0
@@ -25,7 +26,7 @@ def get_images(term, dest, num=40):
           cx=secrets.searchid,
           searchType='image',
           num=10,
-          start=total,
+          start=total+1,
         ).execute()
 
         total += len(res['items'])
@@ -39,6 +40,6 @@ def get_images(term, dest, num=40):
                     f.write(resp.content)
 
 if __name__ == "__main__":
-    get_images('lemon tree', 'unsorted_images')
+    get_images('lemon tree', settings.UNSORTED_IMG_DIR)
     for term in ['motorcycles', 'faces', 'owls', 'city']:
-        get_images(term, 'neg_images')
+        get_images(term, settings.NEGATIVE_IMG_DIR)
