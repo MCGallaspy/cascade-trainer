@@ -10,7 +10,7 @@ from googleapiclient.discovery import build
 import secrets
 import settings
 
-def get_images(term, dest, num=40):
+def get_images(term, dest, num=100):
     total = 0
     nonalnum_expr = re.compile(r"[^\w\d]+")
     try:
