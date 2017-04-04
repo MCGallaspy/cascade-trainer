@@ -8,15 +8,19 @@ Pressing "n" sends it the the directory specified by the setting NEGATIVE_IMG_DI
 
 After sorting, this script will call opencv_annotation on the POSITIVE_IMG_DIR.
 
+An alternate usage creates an annotation for the NEGATIVE_IMG_DIR.
+
 Usage:
     annotate.py [--output=<file>] [--width=<px>] [--dry-run] [--quiet]
+    annotate.py --negatives=<file> [--dry-run]
 
 Options:
-    --help, -h                  Print this help message.
-    --width=<px>, -w <px>       [Default: 400] Specify the width in pixels to rescale each image to.
-    --output=<file>, -o <file>  [Default: annotations.txt] The output file to send the opencv annotations to.
-    --dry-run, -d               Prints what it would do instead of executing.
-    --quiet, -q                 If specified, suppresses output.
+    --help, -h                     Print this help message.
+    --width=<px>, -w <px>          [Default: 400] Specify the width in pixels to rescale each image to.
+    --output=<file>, -o <file>     [Default: annotations.txt] The output file to send the opencv annotations to.
+    --dry-run, -d                  Prints what it would do instead of executing.
+    --quiet, -q                    If specified, suppresses output.
+    --negatives=<file>, -N <file>  Creates a negative annotation file, overwriting <file>.
 """
 import docopt
 import cv2
@@ -88,8 +92,21 @@ def annotate(dir, output_file, dry=False):
     else:
         subprocess.call(cmd, shell=True)
 
+def negative_annotate(dir, output_file, dry=False):
+    if dry:
+        print("Would create negative annotation at {} for {}".format(output_file, dir))
+        return
+    filenames = [os.path.abspath(os.path.join(dir, filename)) for filename in os.listdir(dir)]
+    with open(output_file, "w") as f:
+        f.write("\n".join(filenames))
+
 if __name__ == "__main__":
     args = docopt.docopt(__doc__)
+    
+    if args["--negatives"] is not None:
+        negative_annotate(settings.NEGATIVE_IMG_DIR, args["--negatives"], args["--dry-run"])
+        sys.exit(0)
+    
     output_file = args["--output"]
     dry = args["--dry-run"]
     quiet = args["--quiet"]
