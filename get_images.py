@@ -1,6 +1,24 @@
+"""get_images.py
+
+Searches for images using google custom search engine api.
+To search for terms with whitespace, surround the term "with quotes".
+Results from terms specified with the --negative-term option will be
+added to the negative images directory.
+
+Usage:
+    get_images.py <terms>... [--negative-term=<term>]... [--count=<count>] [--dry-run]
+
+Options:
+    --help, -h                         Print this help message.
+    --negative-term=<term>, -n <term>  Results of searches for this term will be added to the negative sample directory.
+    --count=<count>, -c <count>        [default: 100] For each term, get <count> number of images.
+    --dry-run, -d                      Prints what it would do instead of executing.
+"""
+import docopt
 import os
 import re
 import requests
+import sys
 
 from os.path import join
 from pprint import pprint
@@ -40,6 +58,16 @@ def get_images(term, dest, num=100):
                     f.write(resp.content)
 
 if __name__ == "__main__":
-    get_images('lemon tree', settings.UNSORTED_IMG_DIR)
-    for term in ['motorcycles', 'faces', 'owls', 'city']:
-        get_images(term, settings.NEGATIVE_IMG_DIR)
+    args = docopt.docopt(__doc__)
+    count = int(args["--count"])
+    dry_run = args["--dry-run"]
+    for term in args["<terms>"]:
+        if dry_run:
+            print("Would search google for {} images with positive term {}".format(count, term))
+        else:
+            get_images(term, settings.UNSORTED_IMG_DIR, num=count)
+    for term in args["--negative-term"]:
+        if dry_run:
+            print("Would search google for {} images with negative term {}".format(count, term))
+        else:
+            get_images(term, settings.NEGATIVE_IMG_DIR, num=count)

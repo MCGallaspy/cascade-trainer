@@ -1,3 +1,4 @@
+docopt==0.6.2
 google-api-python-client==1.6.2
 httplib2==0.10.3
 numpy==1.12.1
