@@ -86,7 +86,7 @@ def annotate(dir, output_file, dry=False):
     cmd = [
         os.path.join(settings.OPENCV_BIN_DIR, 'opencv_annotation'),
         '--annotations=' + os.path.abspath(output_file),
-        '--images=' + os.path.abspath(dir),
+        '--images=' + dir,
     ]
     if dry:
         print("Would call subprocess '{}'".format(" ".join(cmd)))
