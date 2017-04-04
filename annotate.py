@@ -12,15 +12,16 @@ An alternate usage creates an annotation for the NEGATIVE_IMG_DIR.
 
 Usage:
     annotate.py [--output=<file>] [--width=<px>] [--dry-run] [--quiet]
-    annotate.py --negatives=<file> [--dry-run]
+    annotate.py --negative [--neg-output=<file>] [--dry-run]
 
 Options:
-    --help, -h                     Print this help message.
-    --width=<px>, -w <px>          [Default: 400] Specify the width in pixels to rescale each image to.
-    --output=<file>, -o <file>     [Default: annotations.txt] The output file to send the opencv annotations to.
-    --dry-run, -d                  Prints what it would do instead of executing.
-    --quiet, -q                    If specified, suppresses output.
-    --negatives=<file>, -N <file>  Creates a negative annotation file, overwriting <file>.
+    --help, -h                      Print this help message.
+    --width=<px>, -w <px>           [Default: 400] Specify the width in pixels to rescale each image to.
+    --output=<file>, -o <file>      [Default: annotations.txt] The output file to send the opencv annotations to.
+    --dry-run, -d                   Prints what it would do instead of executing.
+    --quiet, -q                     If specified, suppresses output.
+    --negative, -N                  Create negative annotation file.                    
+    --neg-output=<file>, -n <file>  [Default: negatives.txt] Creates a negative annotation file, overwriting <file>.
 """
 import docopt
 import cv2
@@ -103,8 +104,8 @@ def negative_annotate(dir, output_file, dry=False):
 if __name__ == "__main__":
     args = docopt.docopt(__doc__)
     
-    if args["--negatives"] is not None:
-        negative_annotate(settings.NEGATIVE_IMG_DIR, args["--negatives"], args["--dry-run"])
+    if args["--negative"]:
+        negative_annotate(settings.NEGATIVE_IMG_DIR, args["--neg-output"], args["--dry-run"])
         sys.exit(0)
     
     output_file = args["--output"]
