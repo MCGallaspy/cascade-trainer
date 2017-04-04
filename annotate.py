@@ -1,3 +1,24 @@
+"""annotate.py
+
+Interactively sort and then annotate the images in the directory specified by the setting UNSORTED_IMG_DIR.
+Images will be rescaled to a width of 400px (specifiable with the --width option).
+Then each image will be displayed from the UNSORTED_IMG_DIR. Press "y" or "n" to sort it.
+Pressing "y" sends it the the directory specified by the setting POSITIVE_IMG_DIR.
+Pressing "n" sends it the the directory specified by the setting NEGATIVE_IMG_DIR.
+
+After sorting, this script will call opencv_annotation on the POSITIVE_IMG_DIR.
+
+Usage:
+    annotate.py [--output=<file>] [--width=<px>] [--dry-run] [--quiet]
+
+Options:
+    --help, -h                  Print this help message.
+    --width=<px>, -w <px>       [Default: 400] Specify the width in pixels to rescale each image to.
+    --output=<file>, -o <file>  [Default: annotations.txt] The output file to send the opencv annotations to.
+    --dry-run, -d               Prints what it would do instead of executing.
+    --quiet, -q                 If specified, suppresses output.
+"""
+import docopt
 import cv2
 import os
 import shutil
@@ -7,7 +28,10 @@ import subprocess
 import settings
 import sys
 
-def normalize(dir, width):
+def normalize(dir, width, dry=False):
+    if dry:
+        print("Would normalize images in {} to {}px width".format(dir, width))
+        return
     for filename in os.listdir(dir):
         src = os.path.abspath(os.path.join(dir, filename))
         img = cv2.imread(src, cv2.IMREAD_COLOR)
@@ -19,7 +43,10 @@ def normalize(dir, width):
         newimg = cv2.resize(img, size)
         cv2.imwrite(src, newimg)
 
-def sort_images(dir, pos_dest, neg_dest):
+def sort_images(dir, pos_dest, neg_dest, dry=False):
+    if dry:
+        print("Would sort images in {} to pos. dir {} and neg. dir {}".format(dir, pos_dest, neg_dest))
+        return
     try:
         os.makedirs(os.path.abspath(pos_dest))
     except os.error:
@@ -50,15 +77,29 @@ def sort_images(dir, pos_dest, neg_dest):
                 print("Invalid option {}, choose y or n.".format(c))
         cv2.destroyWindow('img')
 
-def annotate(dir):
+def annotate(dir, output_file, dry=False):
     cmd = [
         os.path.join(settings.OPENCV_BIN_DIR, 'opencv_annotation'),
-        '--annotations=' + os.path.abspath('annotations.txt'),
+        '--annotations=' + os.path.abspath(output_file),
         '--images=' + os.path.abspath(dir),
     ]
-    subprocess.call(cmd, shell=True)
+    if dry:
+        print("Would call subprocess '{}'".format(" ".join(cmd)))
+    else:
+        subprocess.call(cmd, shell=True)
 
 if __name__ == "__main__":
-    normalize(settings.UNSORTED_IMG_DIR, 400)
-    sort_images(settings.UNSORTED_IMG_DIR, settings.POSITIVE_IMG_DIR, settings.NEGATIVE_IMG_DIR)
-    annotate(settings.POSITIVE_IMG_DIR)
+    args = docopt.docopt(__doc__)
+    output_file = args["--output"]
+    dry = args["--dry-run"]
+    quiet = args["--quiet"]
+    width = int(args["--width"])
+    if not quiet:
+        print ("Normalizing to {}px.".format(width))
+    normalize(settings.UNSORTED_IMG_DIR, width, dry)
+    if not quiet:
+        print("Sorting images.")
+    sort_images(settings.UNSORTED_IMG_DIR, settings.POSITIVE_IMG_DIR, settings.NEGATIVE_IMG_DIR, dry)
+    if not quiet:
+        print("Calling opencv_annotation.")
+    annotate(settings.POSITIVE_IMG_DIR, output_file, dry)
