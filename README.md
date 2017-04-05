@@ -2,7 +2,7 @@
 
 A set of Python scripts for easily creating a Haar cascade object detector using OpenCV.
 OpenCV has some tool for this already, which these scripts complement.
-For example, there are scripts for automatically downloading images from Google's custom search engine API.
+For example, there is a script for automatically downloading images from Google's custom search engine API.
 You can specify many options using these scripts, however for advanced use most of the scripts support the
 `--dry-run` option so you can see how the related OpenCV tool would be used as a starting point.
 
@@ -96,7 +96,7 @@ at, so you can always add more stages later if needed.
 
 If the number of images is too low or some images are too similar, then the classifier may fail early. In that case,
 run `train.py` with the `--dry-run` option, copy the command that would have been run, and specify that a fewer
-number of positive images are used in training by changin the `-numPos` option.
+number of positive images are used in training by changing the `-numPos` option.
 
 ```bash
 >> python train.py -d
