@@ -44,7 +44,7 @@ def normalize(dir, width, dry=False):
             continue
         imgheight, imgwidth, channels = img.shape
         scale = float(width) / imgwidth
-        size = (width,  int(scale * imgheight))
+        size = (int(scale * imgheight), width)
         newimg = cv2.resize(img, size)
         cv2.imwrite(src, newimg)
 
