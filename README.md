@@ -6,10 +6,14 @@ For example, there is a script for automatically downloading images from Google'
 You can specify many options using these scripts, however for advanced use most of the scripts support the
 `--dry-run` option so you can see how the related OpenCV tool would be used as a starting point.
 
+The emphasis of this set of scripts is on getting something that just works without having to think about a lot of
+different options. However the scripts do support specifying many options. Check out the `--help` messages
+for more info.
+
 ## Setup
 
-I have tested this with the following versions, however I suspect that other version of Python or OpenCV
-are readily supported. If you get these to work with other version, be sure to open a PR!
+I have tested this with the following versions, however I suspect that other versions of Python or OpenCV
+are readily supported. If you get these to work with other versions, be sure to open a PR!
 
 Requirements:
 
